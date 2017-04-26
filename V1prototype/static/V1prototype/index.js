@@ -1,4 +1,4 @@
-(function(){
+// (function(){
     var vectorSource = new ol.source.Vector({
       //create empty vector
     });
@@ -58,12 +58,9 @@
       target: document.getElementById('map'),
       view: new ol.View({
         center: ol.proj.fromLonLat([4.209137, 51.914997]),
+        // center: [4.209137, 51.914997],
         zoom: 12
       })
-    });
-    vectorSource.events.register('mousedown', vectorSource, function(evt){
-      this.pop.show();
-      OpenLayers.Event.stop(evt); 
-      });                                                              
-})();
+    });                                                        
+// })();
 
