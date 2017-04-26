@@ -61,4 +61,9 @@
         zoom: 12
       })
     });
+    vectorSource.events.register('mousedown', vectorSource, function(evt){
+      this.pop.show();
+      OpenLayers.Event.stop(evt); 
+      });                                                              
 })();
+
