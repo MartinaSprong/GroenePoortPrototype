@@ -21,8 +21,8 @@ map.on('singleclick', function(evt) {
         var coord = feature.getGeometry().getCoordinates();
         var props = feature.getProperties();
         var info = "<h2>Test</h2>";
-            info += "<p></p>";
             info += "<p>Status:</p>";
+            info += "<p><a href='" + props.caseurl + "'>To graph</a></p>";
         // Offset the popup so it points at the middle of the marker not the tip
         popup.setOffset([0, -22]);
         popup.show(coord, info);
