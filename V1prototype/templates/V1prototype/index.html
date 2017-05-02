@@ -1,31 +1,6 @@
 {% extends 'V1prototype/base.html' %}
 {% block content %}
-    <div class="row">
-      <div class="col s3">
-      <h4>Select parameter</h4>
-        <div class="userView">
-          {% comment %}<a href="#!user"><img class="circle" src="{% static 'V1prototype/images/background.jpg' %}"></a>{% endcomment %}
-        </div>
-        <p>
-      <input type="checkbox" id="indeterminate-checkbox" />
-        <label for="indeterminate-checkbox">Chlorosity</label>
-      </p>
-      <input type="checkbox" id="indeterminate-checkbox-two" />
-        <label for="indeterminate-checkbox-two">Tide</label>
-      </p>
-      <div class="divider"></div>
-      <div class="row">
-        <div class="input-field col s6">
-          <input placeholder="dd-mm-yyyy" id="first_name" type="text" class="validate">
-          <label for="first_name">From</label>
-        </div>
-        <div class="input-field col s6">
-          <input placeholder="dd-mm-yyyy" id="last_name" type="text" class="validate">
-          <label for="last_name">To</label>
-        </div>
-      </div>
-        {% comment %}<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>{% endcomment %}
-      </div>
+    
     
       <div class="col s9">
         <div id="map" class="map" ></div>
