@@ -59,7 +59,7 @@
       view: new ol.View({
         center: ol.proj.fromLonLat([4.209137, 51.914997]),
         // center: [4.209137, 51.914997],
-        zoom: 10
+        zoom: 12
       })
     });                                                        
 // })();
