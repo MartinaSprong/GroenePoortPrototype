@@ -11,3 +11,7 @@ nav .nav-wrapper{
     width: 900px; 
     height: 500px
 }
+
+.ol-popup-content{
+    background-color: white;
+}

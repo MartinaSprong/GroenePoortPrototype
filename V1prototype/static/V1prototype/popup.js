@@ -17,17 +17,14 @@ map.on('singleclick', function(evt) {
     });
 
     if (feature) {
-
         var coord = feature.getGeometry().getCoordinates();
         // var props = feature.getProperties();
-        var info = "<p>Test</p>";
-            info += "<p>Status:</p>";
+        var info = "<p>Lorem Ipsum</p>";
+            // info += "<p>Status:</p>";
             // info += "<p><a href='" + props.caseurl + "'>To graph</a></p>";
             info += "<p><a href='graph'>To graph</a></p>";
         // Offset the popup so it points at the middle of the marker not the tip
         popup.setOffset([0, -22]);
         popup.show(coord, info);
-
     }
-
 });
