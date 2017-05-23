@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from V1prototype.models import tide
+from V1prototype.models import tide 
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,10 +18,15 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
-# Create your views here.
 
 def index(request):
-    return render(request, 'V1prototype/index.html')
+    #tide.objects.filter(locationName="Eemshaven")
+    #tide.objects.order_by('id')
+    context = dict()
+    context['tides'] = tide.objects.all()
+    print(context)
+    # tides = tide.objects.filter(locationName="Eemshaven")
+    return render(request,'V1prototype/index.html', context)
 
 def graphView(request):
     return render(request, 'V1prototype/graph.html')
@@ -47,5 +52,6 @@ def jsonGetTide(object):
      log.debug("Checking for git user") 
      print(t1)  
      return HttpResponse()
+
 
     
