@@ -34,16 +34,14 @@ def jsonGetTide(object):
          tideMeasurements = tideValue['properties']['measurements']
          for tideValueSecond in tideMeasurements:
              latestValue = tideValueSecond['dateTime']
-            #  coordinates = tideValue['properties']['unitCode']
-            #  print(latestValue)
     #      correctTime = (datetime.datetime.fromtimestamp(int(tideTime)).strftime('%Y-%m-%d %H:%M:%S'))
              t1 = tide.objects.update_or_create(parameterName=tideValueSecond['parameterId'], 
                                                     value=tideValueSecond['latestValue'], 
                                                     unit=tideValueSecond['unitCode'],
                                                     time=tideValueSecond['dateTime'], 
-                                                    locationName=tideValue['properties']['name']
-                                                    # coordinates=tideValue['geometry']['coordinates']
-                                                    )
+                                                    locationName=tideValue['properties']['name'],
+                                                    lat=tideValue['geometry']['coordinates'][0],
+                                                    lon=tideValue['geometry']['coordinates'][1])
      log.debug("Entering debug mode")
      log.info("Hey there it works!!")
      log.debug("Checking for git user") 

@@ -10,5 +10,6 @@ class tide(models.Model):
     unit = models.CharField(max_length=50)
     time = models.DateTimeField(default=1)
     locationName = models.CharField(max_length=50)
-    # coordinates = models.FloatField()
+    lat = models.DecimalField(max_digits=12, decimal_places=4, default=0)
+    lon = models.DecimalField(max_digits=12, decimal_places=4, default=0)
 
