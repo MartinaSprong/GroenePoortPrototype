@@ -24,13 +24,11 @@ def index(request):
     #tide.objects.order_by('id')
     context = dict()
     context['tides'] = tide.objects.all()
-    print(context)
-    # tides = tide.objects.filter(locationName="Eemshaven")
     return render(request,'V1prototype/index.html', context)
 
 def graphView(request):
     return render(request, 'V1prototype/graph.html')
-
+    
 def jsonGetTide(object):
     #  download and de-serialize json
      tideUrl = json.load(urllib2.urlopen('https://waterinfo.rws.nl/api/point/latestmeasurements?parameterid=waterhoogte-t-o-v-nap '))
