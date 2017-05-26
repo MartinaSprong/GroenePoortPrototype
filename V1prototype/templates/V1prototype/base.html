@@ -60,27 +60,17 @@
     var vectorSource = new ol.source.Vector({
       //create empty vector
     });
-    
-    //create single marker and add to source vector
-    // var iconFeatureSingleOne = new ol.Feature({
-    //   geometry: new ol.geom.Point(ol.proj.transform([4.209137, 51.914997], 'EPSG:4326',     
-    //   'EPSG:3857')),
-    //   name: 'Null Island',
-    //   population: 4000,
-    //   rainfall: 500
-    // });
-    // vectorSource.addFeature(iconFeatureSingleOne);
 
     // create icons from database and add to source vector
-      var iconFeatureSingleTwo = new ol.Feature({
-        {% for tide in tides %}
-          geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lat }}, {{ tide.lon }}], 'EPSG:4326', 'EPSG:3857')),
-          name: '{{ tide.parameterName }}',
-          population: 4000,
-          rainfall: 500
-      });
-      vectorSource.addFeature(iconFeatureSingleTwo);
-        {% endfor %}
+      {% for tide in tides %}
+        var iconFeatureSingleTwo = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lon }}, {{ tide.lat }}], 'EPSG:4326', 'EPSG:3857')),
+            name: '{{ tide.parameterName }}',
+            population: 4000,
+            rainfall: 500
+        });
+        vectorSource.addFeature(iconFeatureSingleTwo);
+      {% endfor %}
 
     //create a bunch of icons and add to source vector
     // for (var i=0;i<50;i++){
