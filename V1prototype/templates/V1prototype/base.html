@@ -29,11 +29,11 @@
           {% comment %}<a href="#!user"><img class="circle" src="{% static 'V1prototype/images/background.jpg' %}"></a>{% endcomment %}
         </div>
         <p>
-      <input type="checkbox" id="indeterminate-checkbox" />
-        <label for="indeterminate-checkbox">Chlorosity</label>
+      <input type="checkbox" id="indeterminate-checkbox-chlorosity" />
+        <label for="indeterminate-checkbox-chlorosity">Chlorosity</label>
       </p>
-      <input type="checkbox" id="indeterminate-checkbox-two" />
-        <label for="indeterminate-checkbox-two">Tide</label>
+      <input type="checkbox" id="indeterminate-checkbox-tide" onclick="toggleTide();" />
+        <label for="indeterminate-checkbox-tide">Tide</label>
       </p>
       <div class="divider"></div>
       <div class="row">
@@ -56,21 +56,36 @@
   <script src="{% static 'V1prototype/graph.js' %}"></script>
   <script>
 
-    // (function(){
+    //(function(){
     var vectorSource = new ol.source.Vector({
       //create empty vector
     });
 
-    // create icons from database and add to source vector
-      {% for tide in tides %}
-        var iconFeatureSingleTwo = new ol.Feature({
-            geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lon }}, {{ tide.lat }}], 'EPSG:4326', 'EPSG:3857')),
-            name: '{{ tide.parameterName }}',
-            population: 4000,
-            rainfall: 500
-        });
-        vectorSource.addFeature(iconFeatureSingleTwo);
-      {% endfor %}
+    function addTideMarkers(){
+      // create icons from database and add to source vector
+        {% for tide in tides %}
+          var iconFeatureSingleTwo = new ol.Feature({
+              geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lon }}, {{ tide.lat }}], 'EPSG:4326', 'EPSG:3857')),
+              name: '{{ tide.parameterName }}',
+              population: 4000,
+              rainfall: 500
+          });
+          vectorSource.addFeature(iconFeatureSingleTwo);
+        {% endfor %}
+    }
+
+    function hideTideMarkers(){
+      vectorSource.clear();
+    }
+
+    function toggleTide(){
+      // if checkbox tide is clicked
+      if (document.getElementById("indeterminate-checkbox-tide").checked === true){
+          addTideMarkers();
+      } else {
+          hideTideMarkers();
+      }
+    }
 
     //create a bunch of icons and add to source vector
     // for (var i=0;i<50;i++){
@@ -188,9 +203,8 @@
         zoom: 8
       })
     });                                                        
-// })();
+ //})();
   </script>
-  <!--<script>var context = '{{ context }}' </script>-->
-  </body>
 
+  </body>
 </html>
