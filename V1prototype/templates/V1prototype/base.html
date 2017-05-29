@@ -7,10 +7,11 @@
 <html lang="en">
   <head>
     <link rel="stylesheet" href="https://openlayers.org/en/v4.1.0/css/ol.css" type="text/css">
-    <link rel="stylesheet" href="https://raw.githubusercontent.com/walkermatt/ol3-popup/master/src/ol3-popup.css" />
+    <!--<link rel="stylesheet" href="https://raw.githubusercontent.com/walkermatt/ol3-popup/master/src/ol3-popup.css" />-->
     <link rel="stylesheet" href="{% static 'V1prototype/style.css' %}">    
         <title>OpenLayers example</title>
   </head>
+  <div id="popup"></div></div>
   <body>
     <nav>
       <div class="nav-wrapper">
@@ -51,14 +52,17 @@
     {% block content %}{% endblock %} 
   <script src="https://openlayers.org/en/v4.1.0/build/ol.js" type="text/javascript"></script>
   <script src="{% static 'V1prototype/index.js' %}"></script>
-  <script src="https://raw.githubusercontent.com/walkermatt/ol3-popup/master/src/ol3-popup.js"></script>  
-  <script src="{% static 'V1prototype/popup.js' %}"></script>
+  <!--<script src="https://raw.githubusercontent.com/walkermatt/ol3-popup/master/src/ol3-popup.js"></script>-->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <!--<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>  -->
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
   <script src="{% static 'V1prototype/graph.js' %}"></script>
   <script>
 
     //(function(){
     var vectorSource = new ol.source.Vector({
       //create empty vector
+      //features : [iconFeatureSingleTwo]
     });
 
     function addTideMarkers(){
@@ -115,7 +119,7 @@
     var image = new ol.style.Circle({
       radius: 6,
       fill: null,
-      stroke: new ol.style.Stroke({color: '#D50000', width: 20})
+      stroke: new ol.style.Stroke({color: '#D50000', width: 10})
     });
 
     var styles = {
@@ -190,7 +194,7 @@
     //add the feature vector to the layer vector, and apply a style to whole layer
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource,
-      // style: iconStyle
+     // style: iconStyle
       style: styleFunction
     });
 
@@ -202,7 +206,37 @@
         // center: [4.209137, 51.914997],
         zoom: 8
       })
-    });                                                        
+    });
+
+    var element = document.getElementById('popup');
+
+      var popup = new ol.Overlay({
+        element: element,
+        positioning: 'bottom-center',
+        stopEvent: false,
+        offset: [0, -50]
+      });
+      map.addOverlay(popup);
+
+      // display popup on click
+      map.on('click', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel,
+            function(feature) {
+              return feature;
+            });
+        if (feature) {
+          var coordinates = feature.getGeometry().getCoordinates();
+          popup.setPosition(coordinates);
+          $(element).popover({
+            'placement': 'top',
+            'html': true,
+            'content': feature.get('name')
+          });
+          $(element).popover('show');
+        } else {
+          $(element).popover('destroy');
+        }
+      });                                                        
  //})();
   </script>
 
