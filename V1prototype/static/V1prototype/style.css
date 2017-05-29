@@ -15,3 +15,13 @@ nav .nav-wrapper{
 .ol-popup-content{
     background-color: white;
 }
+
+.ol-overlay-container{
+    background-color: white;
+    bottom: 20px;
+    height: 0px;
+}
+
+.popover.fade.top.in{
+    background-color: white;
+}
