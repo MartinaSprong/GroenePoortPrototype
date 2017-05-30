@@ -18,12 +18,13 @@
     <div class="nav-wrapper">
       {% comment %}<a href="#" class="brand-logo">Logo</a>{% endcomment %}
       <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/V1prototype/">Map</a></li>
         <li><a href="">Graphs</a></li>
-        <li><a href="">Preferences</a></li>
         <li><a href="">Log out</a></li>
       </ul>
     </div>
   </nav>
+  {% block sidebar %}
   <div class="row">
     <div class="col s3">
       <h4>Select parameter</h4>
@@ -38,7 +39,7 @@
       <input type="checkbox" id="indeterminate-checkbox-tide" onclick="toggleTide();" />
       <label for="indeterminate-checkbox-tide">Tide</label>
       </p>
-      <div class="divider"></div>
+      <!--<div class="divider"></div>
       <div class="row">
         <div class="input-field col s6">
           <input placeholder="dd-mm-yyyy" id="first_name" type="text" class="validate">
@@ -48,10 +49,11 @@
           <input placeholder="dd-mm-yyyy" id="last_name" type="text" class="validate">
           <label for="last_name">To</label>
         </div>
-      </div>
+      </div>-->
       {% comment %}
       <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>{% endcomment %}
     </div>
+    {% endblock %}
     {% block content %}{% endblock %}
     <script src="https://openlayers.org/en/v4.1.0/build/ol.js" type="text/javascript"></script>
     <script src="{% static 'V1prototype/index.js' %}"></script>
@@ -74,14 +76,15 @@
             value : '{{ tide.value }}',
             unit : '{{ tide.unit }}',
               //id: '{{ tide.id }}',
-            url: "{% url 'graph' oid=tide.id %}"
+            url: "{% url 'graph' oid=tide.lat %}",
+            timeFromDb: '{{ tide.time }}'
           });
       vectorSource.addFeature(iconFeatureSingleTwo);
       {% endfor %}
     }
 
       function hideTideMarkers() {
-        vectorSource.clear();
+      vectorSource.clear();
       }
 
       function toggleTide() {
@@ -236,6 +239,7 @@
             'content': feature.get('name')
             + feature.get('value')
             + feature.get('unit')
+            + feature.get('timeFromDb')
             + '<p><a href="' + url + '">To graph</a></p>'
           });
           $(element).popover('show');
