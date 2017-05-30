@@ -89,12 +89,9 @@ def index(request):
 
 
 def graphView(request, oid):
-    print(oid)
-    tideView = tide.objects.filter(id=oid).first()
-    context = {
-        'tides': tideView
-    }
-    return render(request, 'V1prototype/graph.html', context)
+    contextGraph = dict()
+    contextGraph['tidesGraph'] = tide.objects.filter(id=oid).first()
+    return render(request, 'V1prototype/graph.html', contextGraph)
 
 def jsonGetTide(object):
     #  download and de-serialize json
