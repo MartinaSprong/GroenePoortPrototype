@@ -1,40 +1,42 @@
-{% load static %}
-{% include 'material/includes/material_css.html' %}
-    <script src="{% static 'material/js/jquery-2.2.0.js' %}"></script>
-    {% include 'material/includes/material_js.html' %}
-    {% load material_form %} 
+{% load static %} {% include 'material/includes/material_css.html' %}
+<script src="{% static 'material/js/jquery-2.2.0.js' %}"></script>
+{% include 'material/includes/material_js.html' %} {% load material_form %}
 <!doctype html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="https://openlayers.org/en/v4.1.0/css/ol.css" type="text/css">
-    <link rel="stylesheet" href="{% static 'V1prototype/style.css' %}">    
-    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
-        <title>OpenLayers example</title>
-  </head>
-  <div id="popup"></div></div>
-  <body>
-    <nav>
-      <div class="nav-wrapper">
-        {% comment %}<a href="#" class="brand-logo">Logo</a>{% endcomment %}
-        <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li><a href="">Graphs</a></li>
-          <li><a href="">Preferences</a></li>
-          <li><a href="">Log out</a></li>
-        </ul>
-      </div>
-    </nav>
-    <div class="row">
-      <div class="col s3">
+
+<head>
+  <link rel="stylesheet" href="https://openlayers.org/en/v4.1.0/css/ol.css" type="text/css">
+  <link rel="stylesheet" href="{% static 'V1prototype/style.css' %}">
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+  <title>OpenLayers example</title>
+</head>
+<div id="popup"></div>
+</div>
+
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      {% comment %}<a href="#" class="brand-logo">Logo</a>{% endcomment %}
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="">Graphs</a></li>
+        <li><a href="">Preferences</a></li>
+        <li><a href="">Log out</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="row">
+    <div class="col s3">
       <h4>Select parameter</h4>
-        <div class="userView">
-          {% comment %}<a href="#!user"><img class="circle" src="{% static 'V1prototype/images/background.jpg' %}"></a>{% endcomment %}
-        </div>
-        <p>
-      <input type="checkbox" id="indeterminate-checkbox-chlorosity" />
+      <div class="userView">
+        {% comment %}
+        <a href="#!user"><img class="circle" src="{% static 'V1prototype/images/background.jpg' %}"></a>{% endcomment %}
+      </div>
+      <p>
+        <input type="checkbox" id="indeterminate-checkbox-chlorosity" />
         <label for="indeterminate-checkbox-chlorosity">Chlorosity</label>
       </p>
       <input type="checkbox" id="indeterminate-checkbox-tide" onclick="toggleTide();" />
-        <label for="indeterminate-checkbox-tide">Tide</label>
+      <label for="indeterminate-checkbox-tide">Tide</label>
       </p>
       <div class="divider"></div>
       <div class="row">
@@ -47,166 +49,168 @@
           <label for="last_name">To</label>
         </div>
       </div>
-        {% comment %}<li><a class="waves-effect" href="#!">Third Link With Waves</a></li>{% endcomment %}
-      </div>
-    {% block content %}{% endblock %} 
-  <script src="https://openlayers.org/en/v4.1.0/build/ol.js" type="text/javascript"></script>
-  <script src="{% static 'V1prototype/index.js' %}"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-  <!--<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>  -->
-  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-  <script src="{% static 'V1prototype/graph.js' %}"></script>
-  <script>
+      {% comment %}
+      <li><a class="waves-effect" href="#!">Third Link With Waves</a></li>{% endcomment %}
+    </div>
+    {% block content %}{% endblock %}
+    <script src="https://openlayers.org/en/v4.1.0/build/ol.js" type="text/javascript"></script>
+    <script src="{% static 'V1prototype/index.js' %}"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>  -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="{% static 'V1prototype/graph.js' %}"></script>
+    <script>
+      //(function(){
+      var vectorSource = new ol.source.Vector({
+        //create empty vector
+      });
 
-    //(function(){
-    var vectorSource = new ol.source.Vector({
-      //create empty vector
-    });
-
-    function addTideMarkers(){
-      // create icons from database and add to source vector
+      function addTideMarkers() {
+        // create icons from database and add to source vector
         {% for tide in tides %}
-          var iconFeatureSingleTwo = new ol.Feature({
-              geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lon }}, {{ tide.lat }}], 'EPSG:4326', 'EPSG:3857')),
-              name: '{{ tide.locationName }}',
-              value : '{{ tide.value }}',
-              unit : '{{ tide.unit }}'
+        var iconFeatureSingleTwo = new ol.Feature({
+            geometry: new ol.geom.Point(ol.proj.transform([{{ tide.lon }}, {{ tide.lat }}], 'EPSG:4326', 'EPSG:3857')),
+            name: '{{ tide.locationName }}',
+            value : '{{ tide.value }}',
+            unit : '{{ tide.unit }}',
+              //id: '{{ tide.id }}',
+            url: "{% url 'graph' oid=tide.id %}"
           });
-          vectorSource.addFeature(iconFeatureSingleTwo);
-        {% endfor %}
+      vectorSource.addFeature(iconFeatureSingleTwo);
+      {% endfor %}
     }
 
-    function hideTideMarkers(){
-      vectorSource.clear();
-    }
-
-    function toggleTide(){
-      // if checkbox tide is clicked
-      if (document.getElementById("indeterminate-checkbox-tide").checked === true){
-          addTideMarkers();
-      } else {
-          hideTideMarkers();
+      function hideTideMarkers() {
+        vectorSource.clear();
       }
-    }
 
-    //create a bunch of icons and add to source vector
-    // for (var i=0;i<50;i++){
- 
-    //     var iconFeature = new ol.Feature({
-    //       geometry: new  
-    //         ol.geom.Point(ol.proj.transform([Math.random()*360-180, Math.random()*180-90], 'EPSG:4326',   'EPSG:3857')),
-    //     name: 'Null Island ' + i,
-    //     population: 4000,
-    //     rainfall: 500
-    //     });
-    //     vectorSource.addFeature(iconFeature);
-    // }
+      function toggleTide() {
+        // if checkbox tide is clicked
+        if (document.getElementById("indeterminate-checkbox-tide").checked === true) {
+          addTideMarkers();
+        } else {
+          hideTideMarkers();
+        }
+      }
 
-    //create the style
-    var iconStyle = new ol.style.Style({
-      image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-        anchor: [0.5, 46],
-        anchorXUnits: 'fraction',
-        anchorYUnits: 'pixels',
-        opacity: 0.75,
-        src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
-      }))
-    });
+      //create a bunch of icons and add to source vector
+      // for (var i=0;i<50;i++){
 
-    //create different style
-    var image = new ol.style.Circle({
-      radius: 6,
-      fill: null,
-      stroke: new ol.style.Stroke({color: '#D50000', width: 10})
-    });
+      //     var iconFeature = new ol.Feature({
+      //       geometry: new  
+      //         ol.geom.Point(ol.proj.transform([Math.random()*360-180, Math.random()*180-90], 'EPSG:4326',   'EPSG:3857')),
+      //     name: 'Null Island ' + i,
+      //     population: 4000,
+      //     rainfall: 500
+      //     });
+      //     vectorSource.addFeature(iconFeature);
+      // }
 
-    var styles = {
-      'Point': new ol.style.Style({
-        image: image
-      }),
-      'LineString': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'green',
-          width: 1
-        })
-      }),
-      'MultiLineString': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'green',
-          width: 1
-        })
-      }),
-      'MultiPoint': new ol.style.Style({
-        image: image
-      }),
-      'MultiPolygon': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'yellow',
-          width: 1
+      //create the style
+      var iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */({
+          anchor: [0.5, 46],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          opacity: 0.75,
+          src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
+        }))
+      });
+
+      //create different style
+      var image = new ol.style.Circle({
+        radius: 6,
+        fill: null,
+        stroke: new ol.style.Stroke({ color: '#D50000', width: 10 })
+      });
+
+      var styles = {
+        'Point': new ol.style.Style({
+          image: image
         }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 0, 0.1)'
-        })
-      }),
-      'Polygon': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'blue',
-          lineDash: [4],
-          width: 3
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(0, 0, 255, 0.1)'
-        })
-      }),
-      'GeometryCollection': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'magenta',
-          width: 2
-        }),
-        fill: new ol.style.Fill({
-          color: 'magenta'
-        }),
-        image: new ol.style.Circle({
-          radius: 10,
-          fill: null,
+        'LineString': new ol.style.Style({
           stroke: new ol.style.Stroke({
+            color: 'green',
+            width: 1
+          })
+        }),
+        'MultiLineString': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'green',
+            width: 1
+          })
+        }),
+        'MultiPoint': new ol.style.Style({
+          image: image
+        }),
+        'MultiPolygon': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'yellow',
+            width: 1
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(255, 255, 0, 0.1)'
+          })
+        }),
+        'Polygon': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'blue',
+            lineDash: [4],
+            width: 3
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(0, 0, 255, 0.1)'
+          })
+        }),
+        'GeometryCollection': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'magenta',
+            width: 2
+          }),
+          fill: new ol.style.Fill({
             color: 'magenta'
+          }),
+          image: new ol.style.Circle({
+            radius: 10,
+            fill: null,
+            stroke: new ol.style.Stroke({
+              color: 'magenta'
+            })
+          })
+        }),
+        'Circle': new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: 'red',
+            width: 2
+          }),
+          fill: new ol.style.Fill({
+            color: 'rgba(255,0,0,0.2)'
           })
         })
-      }),
-      'Circle': new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: 'red',
-          width: 2
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255,0,0,0.2)'
+      };
+
+      var styleFunction = function (feature) {
+        return styles[feature.getGeometry().getType()];
+      };
+
+      //add the feature vector to the layer vector, and apply a style to whole layer
+      var vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        // style: iconStyle
+        style: styleFunction
+      });
+
+      var map = new ol.Map({
+        layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), vectorLayer],
+        target: document.getElementById('map'),
+        view: new ol.View({
+          center: ol.proj.fromLonLat([4.209137, 51.914997]),
+          // center: [4.209137, 51.914997],
+          zoom: 10
         })
-      })
-    };
+      });
 
-    var styleFunction = function(feature) {
-      return styles[feature.getGeometry().getType()];
-    };
-
-    //add the feature vector to the layer vector, and apply a style to whole layer
-    var vectorLayer = new ol.layer.Vector({
-      source: vectorSource,
-     // style: iconStyle
-      style: styleFunction
-    });
-
-    var map = new ol.Map({
-      layers: [new ol.layer.Tile({ source: new ol.source.OSM() }), vectorLayer],
-      target: document.getElementById('map'),
-      view: new ol.View({
-        center: ol.proj.fromLonLat([4.209137, 51.914997]),
-        // center: [4.209137, 51.914997],
-        zoom: 10
-      })
-    });
-
-    var element = document.getElementById('popup');
+      var element = document.getElementById('popup');
 
       var popup = new ol.Overlay({
         element: element,
@@ -217,28 +221,31 @@
       map.addOverlay(popup);
 
       // display popup on click
-      map.on('click', function(evt) {
+      map.on('click', function (evt) {
         var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function(feature) {
-              return feature;
-            });
+          function (feature) {
+            return feature;
+          });
         if (feature) {
           var coordinates = feature.getGeometry().getCoordinates();
           popup.setPosition(coordinates);
+          var url = feature.get('url');
           $(element).popover({
             'placement': 'top',
             'html': true,
-            'content': feature.get('name') + feature.get('value') 
-                       + feature.get('unit') + "<p><a href='graph'>To graph</a></p>"
+            'content': feature.get('name')
+            + feature.get('value')
+            + feature.get('unit')
+            + '<p><a href="' + url + '">To graph</a></p>'
           });
           $(element).popover('show');
         } else {
           $(element).popover('destroy');
         }
-      });      
-      
+      });
+
       // change mouse cursor when over marker
-      map.on('pointermove', function(e) {
+      map.on('pointermove', function (e) {
         if (e.dragging) {
           $(element).popover('destroy');
           return;
@@ -246,8 +253,9 @@
         var pixel = map.getEventPixel(e.originalEvent);
         var hit = map.hasFeatureAtPixel(pixel);
         map.getTarget().style.cursor = hit ? 'pointer' : '';
-      });                                                  
+      });
  //})();
-  </script>
-  </body>
+    </script>
+</body>
+
 </html>
