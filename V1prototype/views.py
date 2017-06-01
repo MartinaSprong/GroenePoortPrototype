@@ -86,14 +86,12 @@ def index(request):
     context = dict()
     context['tides'] = tide.objects.all()
     context['chlorosities'] = chlorosity.objects.all()
-    # contextChlorosity = dict()
-    # contextChlorosity['chlorosities'] = chlorosity.objects.all()
-
     return render(request, 'V1prototype/index.html', context)
 
 def graphView(request, oid):
     contextGraph = dict()
     contextGraph['tidesGraph'] = tide.objects.filter(lat=oid)
+    contextGraph['chlorosityGraph'] = chlorosity.objects.filter(lat=oid)
     print contextGraph
     # contextGraph['tidesGraph'] = tide.objects.filter(id=oid).first()
     return render(request, 'V1prototype/graph.html', contextGraph)
@@ -139,18 +137,18 @@ def jsonGetChlorosity(object):
     for chlorosityValue in chlorosityValues:
         chlorosityMeasurements = chlorosityValue['properties']['measurements']
         convertChlorosityCoordinates = utmToLatLng(31, chlorosityValue['geometry']['coordinates'][0],
-                                         chlorosityValue['geometry']['coordinates'][1],
-                                         northernHemisphere=True)
+                                       chlorosityValue['geometry']['coordinates'][1],
+                                       northernHemisphere=True)
         for chlorosityValueSecond in chlorosityMeasurements:
             latestChlorosityValue = chlorosityValueSecond['dateTime']
     #      correctTime = (datetime.datetime.fromtimestamp(int(tideTime)).strftime('%Y-%m-%d %H:%M:%S'))
             t2 = chlorosity.objects.update_or_create(parameterName=chlorosityValueSecond['parameterId'],
-                                               value=chlorosityValueSecond['latestValue'],
-                                               unit=chlorosityValueSecond['unitCode'],
-                                               time=chlorosityValueSecond['dateTime'],
-                                               locationName=chlorosityValue['properties']['name'],
-                                               lat=convertChlorosityCoordinates[0],
-                                               lon=convertChlorosityCoordinates[1])
+                                                     value=chlorosityValueSecond['latestValue'],
+                                                     unit=chlorosityValueSecond['unitCode'],
+                                                     time=chlorosityValueSecond['dateTime'],
+                                                     locationName=chlorosityValue['properties']['name'],
+                                                     lat=convertChlorosityCoordinates[0],
+                                                     lon=convertChlorosityCoordinates[1])
     log.debug("Entering debug mode")
     log.info("Hey there it works!!")
     log.debug("Checking for git user")

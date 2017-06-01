@@ -2,7 +2,6 @@
   <html>
     <head>
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
     </head>
     <body>
     {% block sidebar %}
@@ -44,7 +43,7 @@
           <a class="waves-effect waves-light btn">Export data</a> 
           {% for tide in tidesGraph %}
             <br>
-            {{ tide.locationName }} -
+            {{ tide.locationName }} {{tide.parameterName}} -
             <!--<br>  -->
             {{ tide.time }}
             <br>
