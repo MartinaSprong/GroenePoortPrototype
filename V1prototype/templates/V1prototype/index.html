@@ -3,7 +3,11 @@
       <div class="col s9">
         <div id="map" class="map" ></div>
         {% for chlorosity in chlorosities %}
-          {{ chlorosity.time }} 
+          {{ chlorosity.lat }} 
+        {% endfor %}
+
+        {% for tide in tides %}
+          {{ tide.parameterName }} 
         {% endfor %}
       </div>
     </div>
