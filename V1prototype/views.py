@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from V1prototype.models import tide
+from V1prototype.models import tide, chlorosity
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -114,9 +114,42 @@ def jsonGetTide(object):
                                                time=tideValueSecond['dateTime'],
                                                locationName=tideValue['properties']['name'],
                                                lat=convertCoordinates[0],
-                                               lon=convertCoordinates[1])
+                                               lon=convertCoordinates[1],
+                                               defaults={'parameterName': tideValueSecond['parameterId'],
+                                                         'value': tideValueSecond['latestValue'],
+                                                         'unit': tideValueSecond['unitCode'],
+                                                         'time': tideValueSecond['dateTime'],
+                                                         'locationName': tideValue['properties']['name'],
+                                                         'lat': convertCoordinates[0],
+                                                         'lon': convertCoordinates[1]})
     log.debug("Entering debug mode")
     log.info("Hey there it works!!")
     log.debug("Checking for git user")
     print t1
+    return HttpResponse()
+
+def jsonGetChlorosity(object):
+    #  download and de-serialize json
+    chlorosityUrl = json.load(urllib2.urlopen(
+        'https://waterinfo.rws.nl/api/point/latestmeasurements?parameterIds=(massa)Concentratie___20chloride___20in___20Oppervlaktewater___20mg___2Fl '))
+    chlorosityValues = chlorosityUrl['features']
+    for chlorosityValue in chlorosityValues:
+        chlorosityMeasurements = chlorosityValue['properties']['measurements']
+        convertChlorosityCoordinates = utmToLatLng(31, chlorosityValue['geometry']['coordinates'][0],
+                                         chlorosityValue['geometry']['coordinates'][1],
+                                         northernHemisphere=True)
+        for chlorosityValueSecond in chlorosityMeasurements:
+            latestChlorosityValue = chlorosityValueSecond['dateTime']
+    #      correctTime = (datetime.datetime.fromtimestamp(int(tideTime)).strftime('%Y-%m-%d %H:%M:%S'))
+            t2 = chlorosity.objects.update_or_create(parameterName=chlorosityValueSecond['parameterId'],
+                                               value=chlorosityValueSecond['latestValue'],
+                                               unit=chlorosityValueSecond['unitCode'],
+                                               time=chlorosityValueSecond['dateTime'],
+                                               locationName=chlorosityValue['properties']['name'],
+                                               lat=convertChlorosityCoordinates[0],
+                                               lon=convertChlorosityCoordinates[1])
+    log.debug("Entering debug mode")
+    log.info("Hey there it works!!")
+    log.debug("Checking for git user")
+    print t2
     return HttpResponse()

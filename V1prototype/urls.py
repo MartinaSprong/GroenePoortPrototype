@@ -9,5 +9,6 @@ urlpatterns = (
     url(r'^tide/(?P<oid>\d+\.\d{4})/$', views.graphView, name='graph'), 
     # url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     # url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),
-    url(r'^tide/$', views.jsonGetTide, name='jsonGetTide')
+    url(r'^tide/$', views.jsonGetTide, name='jsonGetTide'),
+    url(r'^chlorosity/$', views.jsonGetChlorosity, name='jsonGetChlorosity'),
 )
