@@ -85,8 +85,11 @@ def index(request):
     # tide.objects.order_by('id')
     context = dict()
     context['tides'] = tide.objects.all()
-    return render(request, 'V1prototype/index.html', context)
+    context['chlorosities'] = chlorosity.objects.all()
+    # contextChlorosity = dict()
+    # contextChlorosity['chlorosities'] = chlorosity.objects.all()
 
+    return render(request, 'V1prototype/index.html', context)
 
 def graphView(request, oid):
     contextGraph = dict()
