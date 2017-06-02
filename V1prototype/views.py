@@ -91,10 +91,15 @@ def index(request):
 def graphView(request, oid):
     contextGraph = dict()
     contextGraph['tidesGraph'] = tide.objects.filter(lat=oid)
-    contextGraph['chlorosityGraph'] = chlorosity.objects.filter(lat=oid)
+    # contextGraph['chlorosityGraph'] = chlorosity.objects.filter(lat=oid)
     print contextGraph
     # contextGraph['tidesGraph'] = tide.objects.filter(id=oid).first()
     return render(request, 'V1prototype/graph.html', contextGraph)
+
+def graphChlorosityView(request, oid):
+    contextChlorosityGraph = dict()
+    contextChlorosityGraph['chlorosityGraph'] = chlorosity.objects.filter(lat=oid)
+    return render(request, 'V1prototype/graph.html', contextChlorosityGraph)
 
 def jsonGetTide(object):
     #  download and de-serialize json

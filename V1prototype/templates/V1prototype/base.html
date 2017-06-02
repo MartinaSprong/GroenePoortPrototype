@@ -105,7 +105,7 @@
             value : '{{ chlorosity.value }}',
             unit : '{{ chlorosity.unit }}',
               //id: '{{ tide.id }}',
-            url: "{% url 'graph' oid=chlorosity.lat %}",
+            url: "{% url 'graphChlorosity' oid=chlorosity.lat %}",
             timeFromDb: '{{ chlorosity.time }}'
           });
       vectorSource.addFeature(iconFeatureSingleThree);

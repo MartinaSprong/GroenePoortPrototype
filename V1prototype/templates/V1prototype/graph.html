@@ -74,20 +74,22 @@
         ]);
 
         var options = {
-          chart: {
-            title: '',
-            subtitle: ''
-          },
-          width: 900,
-          height: 500,
-          hAxis: {
-            format: 'd-m-Y',
-            gridlines: {count: 15}
-          },
-          explorer: { 
-                actions: ['dragToZoom', 'rightClickToReset'], 
-                axis: 'vertical'
-            }
+          {% for tide in tidesGraph %}
+            chart: {
+              title: '{{ tide.locationName}}',
+              subtitle: ''
+            },
+          {% endfor %}
+            width: 900,
+            height: 500,
+            hAxis: {
+              format: 'd-m-Y',
+              gridlines: {count: 15}
+            },
+            explorer: { 
+                  actions: ['dragToZoom', 'rightClickToReset'], 
+                  axis: 'vertical'
+              }
         };
 
         var chart = new google.charts.Line(document.getElementById('linechart_material'));
