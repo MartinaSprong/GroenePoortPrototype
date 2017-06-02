@@ -99,7 +99,8 @@ def graphView(request, oid):
 def graphChlorosityView(request, oid):
     contextChlorosityGraph = dict()
     contextChlorosityGraph['chlorosityGraph'] = chlorosity.objects.filter(lat=oid)
-    return render(request, 'V1prototype/graph.html', contextChlorosityGraph)
+    print contextChlorosityGraph
+    return render(request, 'V1prototype/graphChlorosity.html', contextChlorosityGraph)
 
 def jsonGetTide(object):
     #  download and de-serialize json

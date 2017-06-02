@@ -69,15 +69,15 @@
         //time value in db: datetime.datetime(2017, 5, 30, 15, 0, tzinfo=<UTC>)
         //Google charts time should be:   
         data.addRows([
-          {% for tide in tidesGraph %}
-            [new Date({{ tide.time|date:"d-m-Y" }}), {{ tide.value }} ],
+          {% for chlorosity in chlorosityGraph %}
+            [new Date({{ chlorosity.time|date:"d-m-Y" }}), {{ chlorosity.value }} ],
           {% endfor %}
         ]);
 
         var options = {
-          {% for tide in tidesGraph %}
+          {% for chlorosity in chlorosityGraph %}
             chart: {
-              title: '{{ tide.locationName }}',
+              title: '{{ chlorosity.locationName }}',
               subtitle: ''
             },
           {% endfor %}
