@@ -37,25 +37,19 @@
     {% endblock %}
   {% block content %}
         <div class="col s9">
+
           <div id="linechart_material" ></div>
           <div id="table_div"></div>
+          
           <a class="waves-effect waves-light btn">Copy graph</a>
           <a class="waves-effect waves-light btn">Export data</a> 
-          {% for chlorosity in chlorosityGraph %}
-            <br>
-            {{ chlorosity.locationName }} {{chlorosity.parameterName}} -
-            <!--<br>  -->
-            {{ tide.time }}
-            <br>
-            {{ tide.value }}
-          {% endfor %}
         </div>
     </body>
   </html>
     <script type="text/javascript">
-//      google.charts.load('current', {'packages':['table']});
-      google.charts.load('current', {'packages':['line']});
+      google.charts.load('current', {'packages':['corechart', 'line', 'table']});
       google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawTable);
       //google.charts.setOnLoadCallback(drawChlorosityChart);
 
       function drawChart() {
@@ -98,6 +92,26 @@
         var chart = new google.charts.Line(document.getElementById('linechart_material'));
 
         chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        //data.addColumn('string', 'Name');
+        data.addColumn('number', 'Value');
+        //data.addColumn('string', 'Unit');
+        //data.addColumn('date', 'Date');
+
+        data.addRows([
+        {% for tide in tidesGraph %}
+            //[{{ tide.parameterName }},{{ tide.value }}, {{ tide.unit }}, new Date({{ tide.time|date:"d-m-Y" }}) ],
+            [{{ tide.value}}],
+          //['Mike', 2, 'cm', new Date({{ tide.time|date:"d-m-Y" }}],
+          {% endfor %}
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
       }
       
   </script>

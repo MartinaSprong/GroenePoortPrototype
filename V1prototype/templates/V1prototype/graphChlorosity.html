@@ -41,28 +41,22 @@
           <div id="table_div"></div>
           <a class="waves-effect waves-light btn">Copy graph</a>
           <a class="waves-effect waves-light btn">Export data</a> 
-          {% for chlorosity in chlorosityGraph %}
-            <br>
-            {{ chlorosity.locationName }} -
-            <!--<br>  -->
-            {{ chlorosity.time }}
-            <br>
-            {{ chlorosity.value }}
-          {% endfor %}
+
         </div>
     </body>
   </html>
     <script type="text/javascript">
 //      google.charts.load('current', {'packages':['table']});
-      google.charts.load('current', {'packages':['line']});
+      google.charts.load('current', {'packages':['line', 'table']});
       google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawTable);
       //google.charts.setOnLoadCallback(drawChlorosityChart);
 
       function drawChart() {
 
         var data = new google.visualization.DataTable();
         data.addColumn('date', 'Date');
-        data.addColumn('number', 'Tide');
+        data.addColumn('number', 'Chlorosity');
         
         //tide.time on x-axis
         //tide.value on y-axis
@@ -98,6 +92,26 @@
         var chart = new google.charts.Line(document.getElementById('linechart_material'));
 
         chart.draw(data, google.charts.Line.convertOptions(options));
+      }
+
+      function drawTable() {
+        var data = new google.visualization.DataTable();
+        //data.addColumn('string', 'Name');
+        data.addColumn('number', 'Value');
+        //data.addColumn('string', 'Unit');
+        //data.addColumn('date', 'Date');
+
+        data.addRows([
+        {% for chlorosity in chlorosityGraph %}
+            //[{{ tide.parameterName }},{{ tide.value }}, {{ tide.unit }}, new Date({{ tide.time|date:"d-m-Y" }}) ],
+            [{{ chlorosity.value}}],
+          //['Mike', 2, 'cm', new Date({{ tide.time|date:"d-m-Y" }}],
+          {% endfor %}
+        ]);
+
+        var table = new google.visualization.Table(document.getElementById('table_div'));
+
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
       }
       
   </script>
