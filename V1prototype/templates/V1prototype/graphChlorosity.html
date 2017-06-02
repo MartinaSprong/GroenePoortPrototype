@@ -43,11 +43,11 @@
           <a class="waves-effect waves-light btn">Export data</a> 
           {% for chlorosity in chlorosityGraph %}
             <br>
-            {{ chlorosity.locationName }} {{chlorosity.parameterName}} -
+            {{ chlorosity.locationName }} -
             <!--<br>  -->
-            {{ tide.time }}
+            {{ chlorosity.time }}
             <br>
-            {{ tide.value }}
+            {{ chlorosity.value }}
           {% endfor %}
         </div>
     </body>
