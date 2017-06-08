@@ -20,6 +20,8 @@ logging.basicConfig(level=logging.DEBUG)
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__name__)
 
+from django.contrib.auth.decorators import login_required
+
 
 def utmToLatLng(zone, easting, northing, northernHemisphere=True):
     if not northernHemisphere:
@@ -79,7 +81,7 @@ def utmToLatLng(zone, easting, northing, northernHemisphere=True):
 
     return (latitude, longitude)
 
-
+@login_required(login_url='/accounts/login/')
 def index(request):
     # tide.objects.filter(locationName="Eemshaven")
     # tide.objects.order_by('id')
