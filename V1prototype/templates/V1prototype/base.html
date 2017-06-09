@@ -215,9 +215,11 @@
           $(element).popover({
             'placement': 'top',
             'html': true,
-            'content': feature.get('name')
-            + feature.get('value')
+            'content': feature.get('name') 
+            + '-'
+            + feature.get('value') 
             + feature.get('unit')
+            + '<br>'
             + feature.get('timeFromDb')
             + '<p><a href="' + url + '">To graph</a></p>'
           });

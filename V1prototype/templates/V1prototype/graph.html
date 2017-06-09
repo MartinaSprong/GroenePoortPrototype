@@ -11,16 +11,12 @@
       <div class="userView">
       </div>
       <p>
-        <input name="group1" type="radio" id="test2" checked />
-        <label for="test2">Line chart</label>
+        <input type="radio" id="test1" name="toggler" value="1" name="group1" />
+        <label for="test1">Line chart</label>
       </p>
       <p>
-        <input name="group1" type="radio" id="test3"  />
-        <label for="test3">Bar chart</label>
-      </p>
-      <p>
-        <input name="group1" type="radio" id="test4"  />
-        <label for="test4">Raw data</label>
+        <input type="radio" id="test2" name="toggler" value="2" name="group1" />
+        <label for="test2">Raw data</label>
       </p>
       <div class="divider"></div>
       <div class="row">
@@ -38,15 +34,28 @@
   {% block content %}
         <div class="col s9">
 
-          <div id="linechart_material" ></div>
-          <div id="table_div"></div>
+          <div id="blk-1" class="toHide" style="display:none">
+            <div id="linechart_material" ></div> 
+            <a class="waves-effect waves-light btn">Copy graph</a>
+            <a class="waves-effect waves-light btn">Export data</a> 
+          </div>
           
-          <a class="waves-effect waves-light btn">Copy graph</a>
-          <a class="waves-effect waves-light btn">Export data</a> 
+          <div id="blk-2" class="toggler" style="display:none">
+            <div id="table_div"></div>
+          </div>
+
         </div>
     </body>
   </html>
     <script type="text/javascript">
+
+    $(function() {
+      $("[name=toggler]").click(function(){
+            $('.toHide').hide();
+            $("#blk-"+$(this).val()).show('slow');
+      });
+    });
+
       google.charts.load('current', {'packages':['corechart', 'line', 'table']});
       google.charts.setOnLoadCallback(drawChart);
       google.charts.setOnLoadCallback(drawTable);
