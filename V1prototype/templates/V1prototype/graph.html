@@ -42,6 +42,7 @@
           
           <div id="blk-2" class="toggler" style="display:none">
             <div id="table_div"></div>
+            <a class="waves-effect waves-light btn">Export data</a>
           </div>
 
         </div>
@@ -73,7 +74,7 @@
         //Google charts time should be:   
         data.addRows([
           {% for tide in tidesGraph %}
-            [new Date({{ tide.time|date:"d-m-Y" }}), {{ tide.value }} ],
+            [new Date({{ tide.time|date:'d-m-Y' }}), {{ tide.value }} ],
           {% endfor %}
         ]);
 
@@ -105,22 +106,21 @@
 
       function drawTable() {
         var data = new google.visualization.DataTable();
-        //data.addColumn('string', 'Name');
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Place');
         data.addColumn('number', 'Value');
-        //data.addColumn('string', 'Unit');
-        //data.addColumn('date', 'Date');
+        data.addColumn('string', 'Unit');
+        data.addColumn('string', 'Date');
 
         data.addRows([
         {% for tide in tidesGraph %}
-            //[{{ tide.parameterName }},{{ tide.value }}, {{ tide.unit }}, new Date({{ tide.time|date:"d-m-Y" }}) ],
-            [{{ tide.value}}],
-          //['Mike', 2, 'cm', new Date({{ tide.time|date:"d-m-Y" }}],
+            ["{{ tide.parameterName}}", "{{ tide.locationName }}", {{ tide.value}}, "{{ tide.unit }}", '{{ tide.time|date:"d-m-Y H:i" }}'],
           {% endfor %}
         ]);
 
         var table = new google.visualization.Table(document.getElementById('table_div'));
 
-        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+        table.draw(data, {width: '100%', height: '100%'});
       }
       
   </script>
