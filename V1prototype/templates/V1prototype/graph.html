@@ -34,11 +34,10 @@
   {% block content %}
         <div class="col s9">
 
-          <div id="blk-1" class="toHide" style="display:none">
+          {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
             <div id="linechart_material" ></div> 
             <a class="waves-effect waves-light btn">Copy graph</a>
-            <a class="waves-effect waves-light btn">Export data</a> 
-          </div>
+          {% comment %}</div>{% endcomment %}
           
           <div id="blk-2" class="toggler" style="display:none">
             <div id="table_div"></div>
@@ -65,7 +64,7 @@
       function drawChart() {
 
         var data = new google.visualization.DataTable();
-        data.addColumn('date', 'Date');
+        data.addColumn('string', 'Date');
         data.addColumn('number', 'Tide');
         
         //tide.time on x-axis
@@ -74,7 +73,7 @@
         //Google charts time should be:   
         data.addRows([
           {% for tide in tidesGraph %}
-            [new Date({{ tide.time|date:'d-m-Y' }}), {{ tide.value }} ],
+            ['{{ tide.time|date:"d-m-Y H:i" }}', {{ tide.value }} ],
           {% endfor %}
         ]);
 
@@ -111,10 +110,12 @@
         data.addColumn('number', 'Value');
         data.addColumn('string', 'Unit');
         data.addColumn('string', 'Date');
+        data.addColumn('string', 'Time');
 
         data.addRows([
         {% for tide in tidesGraph %}
-            ["{{ tide.parameterName}}", "{{ tide.locationName }}", {{ tide.value}}, "{{ tide.unit }}", '{{ tide.time|date:"d-m-Y H:i" }}'],
+            ["{{ tide.parameterName}}", "{{ tide.locationName }}", {{ tide.value}}, "{{ tide.unit }}", 
+            '{{ tide.time|date:"d-m-Y" }}', '{{ tide.time|date:"H:i" }}'],
           {% endfor %}
         ]);
 
