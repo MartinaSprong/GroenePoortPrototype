@@ -83,13 +83,13 @@
               title: '{{ tide.locationName }}',
               subtitle: ''
             },
-          {% endfor %}
             width: 900,
             height: 500,
             hAxis: {
               format: 'd-m-Y',
               gridlines: {count: 15}
             },
+            {% endfor %}
             explorer: { 
                   actions: ['dragToZoom', 'rightClickToReset'], 
                   axis: 'horizontal',
