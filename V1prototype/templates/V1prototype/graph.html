@@ -40,9 +40,11 @@
 
           {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
             <div id="linechart_material" ></div> 
-            <a class="waves-effect waves-light btn">Copy graph</a>
+            {% comment %}<a class="waves-effect waves-light btn">Copy graph</a>{% endcomment %}
           {% comment %}</div>{% endcomment %}
 
+          {% comment %}<div id="vis_div" style="height: 400px; width: 600px;"></div>{% endcomment %}
+          
           <div id="blk-2" class="toggler" style="display:none">
             {% comment %}<div id="table_div"></div>{% endcomment %}
             <div id="dashboard_div_table">
@@ -50,7 +52,9 @@
               <div id="filter_div_table"></div>
               <div id="chart_div_table"></div>
             </div>
-            <a class="waves-effect waves-light btn">Export data</a>
+            <div id="toolbar_div" >
+              {% comment %}<a class="waves-effect waves-light btn">Export data</a>{% endcomment %}
+            </div>
           </div>
 
           <div id="blk-3" class="toggler" style="display:none">
@@ -73,17 +77,24 @@
       });
     });
 
-      google.charts.load('current', {'packages':['corechart', 'line', 'table', 'controls']});
-      google.charts.setOnLoadCallback(drawChart);
-      google.charts.setOnLoadCallback(drawTable);
+      google.charts.load('current', {'packages':['corechart', 'line', 'table', 'controls', 'charteditor']});
+      google.charts.setOnLoadCallback(draw);
       //google.charts.setOnLoadCallback(drawChlorosityChart);
       // Set a callback to run when the Google Visualization API is loaded.
-      google.charts.setOnLoadCallback(drawDashboard);
-      google.charts.setOnLoadCallback(drawDashboardTable);
-
+     // google.charts.setOnLoadCallback(loadEditor);
+     // var chartEditor = null;
+     var visualization;
       // Callback that creates and populates a data table,
       // instantiates a dashboard, a range slider and a pie chart,
       // passes in the data and draws it.
+
+      function draw() {
+        drawChart();
+        drawDashboard();
+        drawDashboardTable();
+        drawToolbar();
+      }
+
       function drawDashboard() {
 
         // Create our data table.
@@ -186,7 +197,7 @@
             'filterColumnLabel': 'Value'
           }
         });
-
+ 
         // Create a pie chart, passing some options
         var table = new google.visualization.ChartWrapper({
           'chartType': 'Table',
@@ -245,43 +256,29 @@
               }
         };
 
-        // Create a range slider, passing some options
-        var timeRangeSlider = new google.visualization.ControlWrapper({
-          'controlType': 'NumberRangeFilter',
-          'containerId': 'filter_div',
-          'options': {
-            'filterColumnLabel': 'Date'
-          }
-        });
-
         var chart = new google.charts.Line(document.getElementById('linechart_material'));
 
         //chart.bind(timeRangeSlider, data);
         chart.draw(data, google.charts.Line.convertOptions(options));
       }
+       
+      function drawToolbar() {
+      var components = [
+          {type: 'igoogle', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA',
+           gadget: 'https://www.google.com/ig/modules/pie-chart.xml',
+           userprefs: {'3d': 1}},
+          {type: 'html', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA'},
+          {type: 'csv', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA'},
+          {type: 'htmlcode', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA',
+           gadget: 'https://www.google.com/ig/modules/pie-chart.xml',
+           userprefs: {'3d': 1},
+           style: 'width: 800px; height: 700px; border: 3px solid purple;'}
+      ];
 
-      function drawTable() {
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Place');
-        data.addColumn('number', 'Value');
-        data.addColumn('string', 'Unit');
-        data.addColumn('string', 'Date');
-        data.addColumn('string', 'Time');
+      var container = document.getElementById('toolbar_div');
+      google.visualization.drawToolbar(container, components);
+    };
 
-        data.addRows([
-        {% for tide in tidesGraph %}
-            ["{{ tide.parameterName}}", "{{ tide.locationName }}", {{ tide.value}}, "{{ tide.unit }}", 
-            '{{ tide.time|date:"d-m-Y" }}', '{{ tide.time|date:"H:i" }}'],
-          {% endfor %}
-        ]);
-
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-
-        table.draw(data, {width: '100%', height: '100%'});
-      }
-
-      
   </script>
 
   {% endblock %} 
