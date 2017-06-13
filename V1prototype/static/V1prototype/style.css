@@ -25,3 +25,11 @@ nav .nav-wrapper{
 .popover.fade.top.in{
     background-color: white;
 }
+
+#dashboard_div_table{
+    margin-top: 20px;
+}
+
+#dashboard_div{
+    margin-top: 20px;
+}
