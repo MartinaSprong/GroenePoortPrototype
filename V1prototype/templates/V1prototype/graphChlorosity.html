@@ -7,7 +7,7 @@
     {% block sidebar %}
         <div class="row">
     <div class="col s3">
-      <h4>Preferences</h4>
+      <h4>Options</h4>
       <div class="userView">
       </div>
       <p>
@@ -19,7 +19,15 @@
         <label for="test2">Raw data</label>
       </p>
       <div class="divider"></div>
-      <div class="row">
+      <p>
+        <input type="radio" id="test3" name="toggler" value="3" name="group1" />
+        <label for="test3">Filter a day</label>
+      </p>
+      <p>
+        <input type="radio" id="test4" name="toggler" value="4" name="group1" />
+        <label for="test4">Copy chart</label>
+      </p>
+      {% comment %}<div class="row">
         <div class="input-field col s6">
           <input placeholder="dd-mm-yyyy" id="first_name" type="text" class="validate">
           <label for="first_name">From</label>
@@ -28,7 +36,7 @@
           <input placeholder="dd-mm-yyyy" id="last_name" type="text" class="validate">
           <label for="last_name">To</label>
         </div>
-      </div>
+      </div>{% endcomment %}
     </div>
     {% endblock %}
   {% block content %}
@@ -36,14 +44,33 @@
 
           {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
             <div id="linechart_material" ></div> 
-            <a class="waves-effect waves-light btn">Copy graph</a>
+            {% comment %}<div id="png"></div>{% endcomment %}
+            {% comment %}<a class="waves-effect waves-light btn">Copy graph</a>{% endcomment %}
           {% comment %}</div>{% endcomment %}
+          {% comment %}<div id="vis_div" style="height: 400px; width: 600px;"></div>{% endcomment %}
           
           <div id="blk-2" class="toggler" style="display:none">
-            <div id="table_div"></div>
-            <a class="waves-effect waves-light btn">Export data</a>
+            {% comment %}<div id="table_div"></div>{% endcomment %}
+            <div id="dashboard_div_table">
+              <!--Divs that will hold each control and chart-->
+              <div id="filter_div_table"></div>
+              <div id="chart_div_table"></div>
+            </div>
+            <div id="toolbar_div" >
+              {% comment %}<a class="waves-effect waves-light btn">Export data</a>{% endcomment %}
+            </div>
           </div>
 
+          <div id="blk-3" class="toggler" style="display:none">
+            <div id="dashboard_div">
+              <!--Divs that will hold each control and chart-->
+              <div id="filter_div"></div>
+              <div id="chart_div"></div>
+            </div>
+          </div>  
+          <div id="blk-4" class="toggler" style="display:none">
+            <div id="chart_export"></div>
+            <div id="png"></div>
         </div>
     </body>
   </html>
@@ -55,11 +82,142 @@
             $("#blk-"+$(this).val()).show('slow');
       });
     });
-//      google.charts.load('current', {'packages':['table']});
-      google.charts.load('current', {'packages':['line', 'table']});
-      google.charts.setOnLoadCallback(drawChart);
-      google.charts.setOnLoadCallback(drawTable);
+
+      google.charts.load('current', {'packages':['corechart', 'line', 'table', 'controls', 'charteditor']});
+      google.charts.setOnLoadCallback(draw);
       //google.charts.setOnLoadCallback(drawChlorosityChart);
+      // Set a callback to run when the Google Visualization API is loaded.
+     // google.charts.setOnLoadCallback(loadEditor);
+     // var chartEditor = null;
+     var visualization;
+      // Callback that creates and populates a data table,
+      // instantiates a dashboard, a range slider and a pie chart,
+      // passes in the data and draws it.
+
+      function draw() {
+        drawChart();
+        drawDashboard();
+        drawDashboardTable();
+        drawToolbar();
+        drawExportChart();
+      }
+
+      function drawDashboard() {
+
+        // Create our data table.
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Chlorosity');
+        
+        //tide.time on x-axis
+        //tide.value on y-axis
+        //time value in db: datetime.datetime(2017, 5, 30, 15, 0, tzinfo=<UTC>)
+        //Google charts time should be:   
+        data.addRows([
+          {% for chlorosity in chlorosityGraph %}
+            //[new Date({{ tide.time|date:"d-m-Y" }}), {{ tide.value }} ],
+            ['{{ chlorosity.time|date:"d-m-Y H:i" }}', {{ chlorosity.value }} ],
+          {% endfor %}
+        ]);
+
+        // Create a dashboard.
+        var dashboard = new google.visualization.Dashboard(
+            document.getElementById('dashboard_div'));
+
+        // Create a range slider, passing some options
+        var timeRangeSlider = new google.visualization.ControlWrapper({
+          'controlType': 'StringFilter',
+          'containerId': 'filter_div',
+          'options': {
+            'filterColumnLabel': 'Date'
+          }
+        });
+
+        // Create a pie chart, passing some options
+        var lineChart = new google.visualization.ChartWrapper({
+          'chartType': 'LineChart',
+          'containerId': 'chart_div',
+          'options': {
+            'width': 1000,
+            'height': 700,
+            {% for chlorosity in chlorosityGraph %}
+            'title': '{{ chlorosity.locationName }}',
+            {% endfor %}
+            'vAxis':{
+              'title': 'Value',
+              'gridlines': {count: 20}
+            },
+            'hAxis': {
+              'title': 'Date',
+              'direction': -1, 
+              'slantedText': true, 
+              'slantedTextAngle': 30,
+              'gridlines': {count: 15}
+            },
+            'pieSliceText': 'value',
+            'legend': 'right'
+          }
+        });
+
+        // Establish dependencies, declaring that 'filter' drives 'pieChart',
+        // so that the pie chart will only display entries that are let through
+        // given the chosen slider range.
+        dashboard.bind(timeRangeSlider, lineChart);
+
+        // Draw the dashboard.
+        dashboard.draw(data, {width: '100%', height: '100%'});
+      }
+
+      function drawDashboardTable() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Place');
+        data.addColumn('number', 'Value');
+        data.addColumn('string', 'Unit');
+        data.addColumn('string', 'Date');
+        data.addColumn('string', 'Time');
+
+        data.addRows([
+        {% for chlorosity in chlorosityGraph %}
+            ["{{ chlorosity.parameterName}}", "{{ chlorosity.locationName }}", {{ chlorosity.value}}, "{{ chlorosity.unit }}", 
+            '{{ chlorosity.time|date:"d-m-Y" }}', '{{ chlorosity.time|date:"H:i" }}'],
+          {% endfor %}
+        ]);
+
+        // Create a dashboard.
+        var dashboard = new google.visualization.Dashboard(
+            document.getElementById('dashboard_div_table'));
+
+        // Create a range slider, passing some options
+        var valueRangeSlider = new google.visualization.ControlWrapper({
+          'controlType': 'NumberRangeFilter',
+          'containerId': 'filter_div_table',
+          'options': {
+            'filterColumnLabel': 'Value'
+          }
+        });
+ 
+        // Create a pie chart, passing some options
+        var table = new google.visualization.ChartWrapper({
+          'chartType': 'Table',
+          'containerId': 'chart_div_table',
+          'options': {
+            //'width': ,
+            //'height': 300,
+            'pieSliceText': 'value',
+            'legend': 'right'
+          }
+        });
+
+        // Establish dependencies, declaring that 'filter' drives 'pieChart',
+        // so that the pie chart will only display entries that are let through
+        // given the chosen slider range.
+        dashboard.bind(valueRangeSlider, table);
+
+        // Draw the dashboard.
+        dashboard.draw(data, {width: '100%', height: '100%'});
+      }
 
       function drawChart() {
 
@@ -97,33 +255,82 @@
                   maxZoomIn: 4.0
               }
         };
+        var chart_div_line = document.getElementById('linechart_material');
+        var chart = new google.charts.Line(chart_div_line);
+        //var chart = new google.visualization.LineChart(chart_div_line);
 
-        var chart = new google.charts.Line(document.getElementById('linechart_material'));
-
+        //chart.bind(timeRangeSlider, data);
         chart.draw(data, google.charts.Line.convertOptions(options));
       }
+       
+      function drawToolbar() {
+      var components = [
+          {type: 'igoogle', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA',
+           gadget: 'https://www.google.com/ig/modules/pie-chart.xml',
+           userprefs: {'3d': 1}},
+          {type: 'html', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA'},
+          {type: 'csv', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA'},
+          {type: 'htmlcode', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA',
+           gadget: 'https://www.google.com/ig/modules/pie-chart.xml',
+           userprefs: {'3d': 1},
+           style: 'width: 800px; height: 700px; border: 3px solid purple;'}
+      ];
 
-      function drawTable() {
+      var container = document.getElementById('toolbar_div');
+      google.visualization.drawToolbar(container, components);
+    };
+
+    function drawExportChart() {
+
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Name');
-        data.addColumn('string', 'Place');
-        data.addColumn('number', 'Value');
-        data.addColumn('string', 'Unit');
         data.addColumn('string', 'Date');
-        data.addColumn('string', 'Time');
-
+        data.addColumn('number', 'Chlorosity');
+        
+        //tide.time on x-axis
+        //tide.value on y-axis
+        //time value in db: datetime.datetime(2017, 5, 30, 15, 0, tzinfo=<UTC>)
+        //Google charts time should be:   
         data.addRows([
-        {% for chlorosity in chlorosityGraph %}
-            ["{{ chlorosity.parameterName}}", "{{ chlorosity.locationName }}", {{ chlorosity.value}}, "{{ chlorosity.unit }}", 
-            '{{ chlorosity.time|date:"d-m-Y" }}', '{{ chlorosity.time|date:"H:i" }}'],
+          {% for chlorosity in chlorosityGraph %}
+            ['{{ chlorosity.time|date:"d-m-Y H:i" }}', {{ chlorosity.value }} ],
           {% endfor %}
         ]);
 
-        var table = new google.visualization.Table(document.getElementById('table_div'));
-
-        table.draw(data, {  width: '100%', height: '100%'});
+        var options = {
+          {% for chlorosity in chlorosityGraph %}
+            title: '{{ chlorosity.locationName }}',
+            subtitle: '',
+            width: 1000,
+            height: 700,
+            vAxis:{
+              title: 'Value',
+              gridlines: {count: 20}
+            },
+            hAxis: {
+              title: 'Date',
+              direction: -1, 
+              slantedText: true, 
+              slantedTextAngle: 30,
+              gridlines: {count: 15}
+            },
+            {% endfor %}
+        };
+        
+        var chart_export = document.getElementById('chart_export');
+        //var chart = new google.charts.Line(chart_div_line);
+        var chart = new google.visualization.LineChart(chart_export);
+        
+        // Wait for the chart to finish drawing before calling the getImageURI() method.
+        google.visualization.events.addListener(chart, 'ready', function () {
+        //chart_div_line.innerHTML = '<img src="' + chart.getChart().getImageURI() + '">';
+        document.getElementById('png').innerHTML = '<a href="' + chart.getImageURI() + '">Copy</a>';
+        console.log(chart_div.innerHTML);
+      });
+        
+        //chart.bind(timeRangeSlider, data);
+        chart.draw(data, options);
       }
-      
+
   </script>
 
   {% endblock %} 
