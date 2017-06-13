@@ -7,7 +7,7 @@
     {% block sidebar %}
         <div class="row">
     <div class="col s3">
-      <h4>Preferences</h4>
+      <h4>Options</h4>
       <div class="userView">
       </div>
       <p>
@@ -22,6 +22,10 @@
       <p>
         <input type="radio" id="test3" name="toggler" value="3" name="group1" />
         <label for="test3">Filter a day</label>
+      </p>
+      <p>
+        <input type="radio" id="test4" name="toggler" value="4" name="group1" />
+        <label for="test4">Copy chart</label>
       </p>
       {% comment %}<div class="row">
         <div class="input-field col s6">
@@ -40,9 +44,9 @@
 
           {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
             <div id="linechart_material" ></div> 
+            {% comment %}<div id="png"></div>{% endcomment %}
             {% comment %}<a class="waves-effect waves-light btn">Copy graph</a>{% endcomment %}
           {% comment %}</div>{% endcomment %}
-
           {% comment %}<div id="vis_div" style="height: 400px; width: 600px;"></div>{% endcomment %}
           
           <div id="blk-2" class="toggler" style="display:none">
@@ -64,7 +68,9 @@
               <div id="chart_div"></div>
             </div>
           </div>  
-
+          <div id="blk-4" class="toggler" style="display:none">
+            <div id="chart_export"></div>
+            <div id="png"></div>
         </div>
     </body>
   </html>
@@ -93,6 +99,7 @@
         drawDashboard();
         drawDashboardTable();
         drawToolbar();
+        drawExportChart();
       }
 
       function drawDashboard() {
@@ -255,8 +262,10 @@
                   maxZoomIn: 4.0
               }
         };
-
-        var chart = new google.charts.Line(document.getElementById('linechart_material'));
+        var chart_div_line = document.getElementById('linechart_material');
+        var chart = new google.charts.Line(chart_div_line);
+        //var chart = new google.visualization.LineChart(chart_div_line);
+        
 
         //chart.bind(timeRangeSlider, data);
         chart.draw(data, google.charts.Line.convertOptions(options));
@@ -278,6 +287,52 @@
       var container = document.getElementById('toolbar_div');
       google.visualization.drawToolbar(container, components);
     };
+
+    function drawExportChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Date');
+        data.addColumn('number', 'Tide');
+        
+        //tide.time on x-axis
+        //tide.value on y-axis
+        //time value in db: datetime.datetime(2017, 5, 30, 15, 0, tzinfo=<UTC>)
+        //Google charts time should be:   
+        data.addRows([
+          {% for tide in tidesGraph %}
+            ['{{ tide.time|date:"d-m-Y H:i" }}', {{ tide.value }} ],
+          {% endfor %}
+        ]);
+
+        var options = {
+          {% for tide in tidesGraph %}
+            chart: {
+              title: '{{ tide.locationName }}',
+              subtitle: ''
+            },
+            width: 900,
+            height: 500,
+            hAxis: {
+              format: 'd-m-Y',
+              gridlines: {count: 15}
+            },
+            {% endfor %}
+        };
+        
+        var chart_export = document.getElementById('chart_export');
+        //var chart = new google.charts.Line(chart_div_line);
+        var chart = new google.visualization.LineChart(chart_export);
+        
+        // Wait for the chart to finish drawing before calling the getImageURI() method.
+        google.visualization.events.addListener(chart, 'ready', function () {
+        //chart_div_line.innerHTML = '<img src="' + chart.getChart().getImageURI() + '">';
+        document.getElementById('png').innerHTML = '<a href="' + chart.getImageURI() + '">Copy</a>';
+        console.log(chart_div.innerHTML);
+      });
+        
+        //chart.bind(timeRangeSlider, data);
+        chart.draw(data, google.charts.Line.convertOptions(options));
+      }
 
   </script>
 
