@@ -120,27 +120,6 @@
           {% endfor %}
         ]);
 
-        var options = {
-          {% for tide in tidesGraph %}
-            chart: {
-              title: '{{ tide.locationName }}',
-              subtitle: ''
-            },
-            width: 900,
-            height: 500,
-            hAxis: {
-              format: 'd-m-Y',
-              gridlines: {count: 15}
-            },
-            {% endfor %}
-            explorer: { 
-                  actions: ['dragToZoom', 'rightClickToReset'], 
-                  axis: 'horizontal',
-                  keepInBounds: true,
-                  maxZoomIn: 4.0
-              }
-        };
-
         // Create a dashboard.
         var dashboard = new google.visualization.Dashboard(
             document.getElementById('dashboard_div'));
@@ -159,8 +138,22 @@
           'chartType': 'LineChart',
           'containerId': 'chart_div',
           'options': {
-            //'width': ,
-            //'height': 300,
+            'width': 1000,
+            'height': 700,
+            {% for tide in tidesGraph %}
+            'title': '{{ tide.locationName }}',
+            {% endfor %}
+            'vAxis':{
+              'title': 'Value',
+              'gridlines': {count: 20}
+            },
+            'hAxis': {
+              'title': 'Date',
+              'direction': -1, 
+              'slantedText': true, 
+              'slantedTextAngle': 30,
+              'gridlines': {count: 15}
+            },
             'pieSliceText': 'value',
             'legend': 'right'
           }
@@ -265,7 +258,6 @@
         var chart_div_line = document.getElementById('linechart_material');
         var chart = new google.charts.Line(chart_div_line);
         //var chart = new google.visualization.LineChart(chart_div_line);
-        
 
         //chart.bind(timeRangeSlider, data);
         chart.draw(data, google.charts.Line.convertOptions(options));
@@ -306,14 +298,19 @@
 
         var options = {
           {% for tide in tidesGraph %}
-            chart: {
-              title: '{{ tide.locationName }}',
-              subtitle: ''
+            title: '{{ tide.locationName }}',
+            subtitle: '',
+            width: 1000,
+            height: 700,
+            vAxis:{
+              title: 'Value',
+              gridlines: {count: 20}
             },
-            width: 900,
-            height: 500,
             hAxis: {
-              format: 'd-m-Y',
+              title: 'Date',
+              direction: -1, 
+              slantedText: true, 
+              slantedTextAngle: 30,
               gridlines: {count: 15}
             },
             {% endfor %}
@@ -331,7 +328,7 @@
       });
         
         //chart.bind(timeRangeSlider, data);
-        chart.draw(data, google.charts.Line.convertOptions(options));
+        chart.draw(data, options);
       }
 
   </script>
