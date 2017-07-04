@@ -41,15 +41,20 @@
     {% endblock %}
   {% block content %}
         <div class="col s9">
+        <div id="blk-4" class="toggler" style="display:none">
+            <div id="chart_export"></div>
+            <div id="png"></div>
+        </div>        
 
-          {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
-            <div id="linechart_material" ></div> 
-            {% comment %}<div id="png"></div>{% endcomment %}
-            {% comment %}<a class="waves-effect waves-light btn">Copy graph</a>{% endcomment %}
-          {% comment %}</div>{% endcomment %}
-          {% comment %}<div id="vis_div" style="height: 400px; width: 600px;"></div>{% endcomment %}
+          <div id="blk-3" class="toggler" style="display:none">
+            <div id="dashboard_div">
+              <!--Divs that will hold each control and chart-->
+              <div id="filter_div"></div>
+              <div id="chart_div"></div>
+            </div>
+          </div>  
           
-          <div id="blk-2" class="toggler" style="display:none">
+        <div id="blk-2" class="toggler" style="display:none">
             {% comment %}<div id="table_div"></div>{% endcomment %}
             <div id="dashboard_div_table">
               <!--Divs that will hold each control and chart-->
@@ -60,18 +65,13 @@
               {% comment %}<a class="waves-effect waves-light btn">Export data</a>{% endcomment %}
             </div>
           </div>
-
-          <div id="blk-3" class="toggler" style="display:none">
-            <div id="dashboard_div">
-              <!--Divs that will hold each control and chart-->
-              <div id="filter_div"></div>
-              <div id="chart_div"></div>
-            </div>
-          </div>  
-          <div id="blk-4" class="toggler" style="display:none">
-            <div id="chart_export"></div>
-            <div id="png"></div>
-        </div>
+          {% comment %}<div id="blk-1" class="toHide" style="display:none">{% endcomment %}
+            <div id="linechart_material" ></div> 
+            {% comment %}<div id="png"></div>{% endcomment %}
+            {% comment %}<a class="waves-effect waves-light btn">Copy graph</a>{% endcomment %}
+          {% comment %}</div>{% endcomment %}
+          {% comment %}<div id="vis_div" style="height: 400px; width: 600px;"></div>{% endcomment %}
+          
     </body>
   </html>
     <script type="text/javascript">
